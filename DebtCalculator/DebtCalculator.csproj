@@ -47,6 +47,7 @@
     <Compile Include="Models\Debt.cs" />
     <Compile Include="Models\DebtCollection.cs" />
     <Compile Include="Models\Menus\DebtMenu.cs" />
+    <Compile Include="Models\Menus\DisplayPayoffMenu.cs" />
     <Compile Include="Models\Menus\IncomeMenu.cs" />
     <Compile Include="Models\Menus\LoadMenu.cs" />
     <Compile Include="Models\Menus\MainMenu.cs" />

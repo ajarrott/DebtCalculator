@@ -9,7 +9,6 @@ namespace DebtCalculator.Models
     internal static class DebtCollection
     {
         static List<Debt> _currentDebts = new List<Debt>();
-        public static Action<string> WriteLine { get; set; }
 
         public static void AddDebt(Debt debt)
         {
@@ -36,7 +35,7 @@ namespace DebtCalculator.Models
         {
             foreach (var debt in _currentDebts)
             {
-                WriteLine(_currentDebts.IndexOf(debt) + 1 + ": " + debt.ToString());
+                Console.WriteLine(_currentDebts.IndexOf(debt) + 1 + ": " + debt.ToString());
             }
         }
         

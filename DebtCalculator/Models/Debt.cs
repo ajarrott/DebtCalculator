@@ -40,7 +40,6 @@ namespace DebtCalculator.Models
                 decimal amountPaidToPrincipal = 0.00m;
                 decimal minPayment = ((currentBalance * 0.01m) + interest);
 
-
                 if (minPayment > estimatedPayment) throw new Exception(string.Format("Payment too small, minimum payment must be more than {0:C}, currently {1:C}", minPayment, estimatedPayment));
 
                 if (currentBalance - (estimatedPayment - interest) > 0)
@@ -65,6 +64,16 @@ namespace DebtCalculator.Models
             return new PaymentInformation(LoanName, interestPaid, Apr, totalAmountPaid, estimatedPayment, lastPayment, numPayments);
         }
 
+        public decimal GetMinimumPayment()
+        {
+            DateTime currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            var days = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
+            var dayDecimal = days / 365.0m;
+            var interestRatio = dayDecimal * Apr;
+            decimal interest = CurrentBalance * interestRatio;
+            return ((CurrentBalance * 0.01m) + interest);
+        }
+
         public override void LoadString(string s)
         {
             var items = s.Split(new string[] { _delim }, StringSplitOptions.RemoveEmptyEntries);
@@ -82,7 +91,7 @@ namespace DebtCalculator.Models
 
         public override string ToString()
         {
-            return string.Format("Name({0})\tBal({1:C})\tInterest({2:P2})", LoanName, CurrentBalance, Apr);
+            return string.Format("Name({0})\tBal({1:C})\tInterest({2:P2})\tMin Payment({3:C})", LoanName, CurrentBalance, Apr, GetMinimumPayment());
         }
     }
 }

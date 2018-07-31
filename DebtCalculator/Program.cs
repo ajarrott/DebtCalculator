@@ -15,7 +15,7 @@ namespace DebtCalculator
         {
             List<Debt> loans = new List<Debt>();
 
-            while(true)
+            while (true)
             {
                 ConsoleKey key = Menu.DisplayMainMenu();
 
@@ -30,9 +30,12 @@ namespace DebtCalculator
                         Menu.DisplayModifyIncome();
                         break;
                     case ConsoleKey.D3:
-                        //Save
+                        Menu.CalculatePayoffs();
                         break;
                     case ConsoleKey.D4:
+                        //Save
+                        break;
+                    case ConsoleKey.D5:
                         break;
                     case ConsoleKey.Q:
                         return;
