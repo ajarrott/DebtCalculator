@@ -31,7 +31,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine();
 
                 // keep looping while updating the excess income
-                validInput = (key.KeyChar >= '1' && key.KeyChar <= '3');
+                validInput = (key.KeyChar >= '1' && key.KeyChar <= '2');
 
                 if(key.Key == ConsoleKey.D3)
                 {
@@ -40,7 +40,7 @@ namespace DebtCalculator.Models.Menus
                         Console.Write("Enter new excess income amount (e.g. 5000): ");
                     } while (!decimal.TryParse(Console.ReadLine(), out tempIncome));
 
-                    _totalIncome = tempIncome
+                    _totalIncome = tempIncome;
                 }
 
             } while (!validInput);
@@ -69,7 +69,12 @@ namespace DebtCalculator.Models.Menus
 
         private static void CalculateOptimalPayoff()
         {
-            throw new NotImplementedException();
+            var highestMinFirst = DebtCollection.GetDebts.OrderBy(x => x.GetMinimumPayment());
+
+            /*foreach(var loan in DebtCollection.GetDebts)
+            {
+                loan.GetMinimumPayment
+            }*/
         }
 
         private static void CalculateManualEntry()

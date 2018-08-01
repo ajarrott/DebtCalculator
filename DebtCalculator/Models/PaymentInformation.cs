@@ -30,14 +30,17 @@ namespace DebtCalculator.Models
 
         public override string ToString()
         {
-            return string.Format("{0}:\n\r\tEstimated Monthly Payment:\t{1:C}\n\r\tNumber of Payments:\t\t{2}\n\r\tLast Payment:\t\t\t{3:C}\n\r\tTotal Amount Paid:\t\t{4:C}\n\r\tInterest Paid:\t\t\t{5:C}\n\r\tAPR:\t\t\t\t{6:P2}\n\r\n\r",
+            return string.Format("{0} ({1:P2}):\n\r\tEstimated Monthly Payment:\t{2:C} x {3}\n\r" +
+                "\tLast Payment:\t\t\t{4:C}\n\r" +
+                "\tTotal Amount Paid:\t\t{5:C}\n\r" +
+                "\tInterest Paid:\t\t\t{6:C}",
                 LoanName,
+                Apr,
                 EstimatedPayment,
                 NumberOfPayments,
                 LastPayment,
                 TotalAmountPaid,
-                InterestPaid,
-                Apr);
+                InterestPaid);
         }
     }
 }
