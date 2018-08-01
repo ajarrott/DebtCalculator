@@ -9,12 +9,16 @@ namespace DebtCalculator.Models
 {
     internal class Debt : SaveLoad
     {
-        public Debt() { }
-        public Debt(string loanName, decimal interestRate, decimal currentBalance)
+        public Debt()
+        {
+            Payments = new List<Payment>();
+        }
+        public Debt(string loanName, decimal interestRate, decimal currentBalance) : this()
         {
             LoanName = loanName;
             Apr = interestRate;
             CurrentBalance = currentBalance;
+            CurrentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         }
 
         public string LoanName { get; set; }
@@ -22,46 +26,55 @@ namespace DebtCalculator.Models
         public decimal CurrentBalance { get; set; } // for now we will assume the current balance is the average daily balance
                                                     // to overestimate we should use the highest balance
 
-        public PaymentInformation CalculatePayoff(decimal estimatedPayment)
+        public DateTime CurrentMonth { get; set; }
+        public List<Payment> Payments { get; set; }
+
+        /// <summary>
+        /// This will not modify the current class
+        /// Gives a high level overview if you want to estimate a payoff
+        /// at a fixed amount over time.
+        /// </summary>
+        /// <param name="estimatedPayment"></param>
+        /// <returns></returns>
+        public PaymentInformation CalculateEstimatedPayoff(decimal estimatedPayment)
         {
-            decimal interestPaid = 0.00m;
-            decimal totalAmountPaid = 0.00m;
+            List<Payment> payments = new List<Payment>();
             decimal currentBalance = CurrentBalance;
-            decimal lastPayment = 0.00m;
             int numPayments = 0;
             DateTime currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month + numPayments, 1);
 
             while (currentBalance > 0.00m)
             {
-                var days = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
-                var dayDecimal = days / 365.0m;
-                var interestRatio = dayDecimal * Apr;
-                decimal interest = currentBalance * interestRatio;
-                decimal amountPaidToPrincipal = 0.00m;
-                decimal minPayment = ((currentBalance * 0.01m) + interest);
+                Payment pmt = new Payment(DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month), Apr, currentBalance, estimatedPayment);
 
-                if (minPayment > estimatedPayment) throw new Exception(string.Format("Payment too small, minimum payment must be more than {0:C}, currently {1:C}", minPayment, estimatedPayment));
-
-                if (currentBalance - (estimatedPayment - interest) > 0)
-                {
-                    amountPaidToPrincipal = (estimatedPayment - interest);
-                }
-                else
-                {
-                    // last payment case, don't overpay the bill
-                    amountPaidToPrincipal = lastPayment = currentBalance;
-                    lastPayment = currentBalance;
-                    amountPaidToPrincipal = currentBalance;
-                }
-
-                currentBalance -= amountPaidToPrincipal;   // remove payment from current balance
-                totalAmountPaid += amountPaidToPrincipal + interest;
-                interestPaid += interest;
-                numPayments++;
+                // last payment
+                payments.Add(pmt);
+                currentBalance -= pmt.AmountPaidToPrincipal;   // remove payment from current balance
                 currentMonth.AddMonths(1);
+
+                if (currentBalance <= 0.00m)
+                {
+                    break;
+                }
             }
 
-            return new PaymentInformation(LoanName, interestPaid, Apr, totalAmountPaid, estimatedPayment, lastPayment, numPayments);
+            return new PaymentInformation(LoanName, Apr, estimatedPayment, payments);
+        }
+
+        /// <summary>
+        /// This WILL modify the current class's CurrentMonth and CurrentBalance
+        /// Make payment to loan returns payment information
+        /// Adds payment to Payments within this class
+        /// </summary>
+        /// <param name="payment"></param>
+        /// <returns></returns>
+        public Payment MakeSinglePayment(decimal payment)
+        {
+            Payment pmt = new Payment(DateTime.DaysInMonth(CurrentMonth.Year, CurrentMonth.Month), Apr, CurrentBalance, payment);
+            CurrentBalance = CurrentBalance - pmt.AmountPaidToPrincipal;
+            CurrentMonth = CurrentMonth.AddMonths(1);
+            Payments.Add(pmt);
+            return pmt;
         }
 
         public decimal GetMinimumPayment()

@@ -20,7 +20,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("---------------------");
                 Console.WriteLine("Payoff Calculator");
                 Console.WriteLine("---------------------");
-                Console.WriteLine("1: Manual Entry");
+                Console.WriteLine("1: Manual Entry (Estimate Payoff)");
                 Console.WriteLine("2: Generate Payment Plan");
                 Console.WriteLine("3: Update Current Excess Income ({0:C})", _totalIncome);
                 Console.WriteLine("B: Go Back");
@@ -33,7 +33,12 @@ namespace DebtCalculator.Models.Menus
                 // keep looping while updating the excess income
                 validInput = (key.KeyChar >= '1' && key.KeyChar <= '2');
 
-                if(key.Key == ConsoleKey.D3)
+                if (key.Key == ConsoleKey.B)
+                {
+                    return;
+                }
+
+                if (key.Key == ConsoleKey.D3)
                 {
                     do
                     {
@@ -44,11 +49,6 @@ namespace DebtCalculator.Models.Menus
                 }
 
             } while (!validInput);
-
-            if(key.Key == ConsoleKey.B)
-            {
-                return;
-            }
 
             if(key.Key == ConsoleKey.D1)
             {
@@ -102,7 +102,7 @@ namespace DebtCalculator.Models.Menus
 
             for (int i = 0; i < debts.Count; i++)
             {
-                Console.WriteLine(debts[i].CalculatePayoff(amountsToPay[i]).ToString());
+                Console.WriteLine(debts[i].CalculateEstimatedPayoff(amountsToPay[i]).ToString());
             }
         }
     }

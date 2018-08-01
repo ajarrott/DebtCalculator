@@ -6,9 +6,21 @@ using System.Threading.Tasks;
 
 namespace DebtCalculator.Models
 {
-    public class PaymentInformation
+    internal class PaymentInformation
     {
         public PaymentInformation() { }
+
+        public PaymentInformation(string loanName, decimal apr, decimal estimatedPayment, List<Payment> payments)
+        {
+            LoanName = loanName;
+            EstimatedPayment = estimatedPayment;
+            Apr = apr;
+            TotalAmountPaid = payments.Sum(x => x.Amount);
+            InterestPaid = payments.Sum(x => x.Interest);
+            LastPayment = payments.Last().Amount;
+            NumberOfPayments = payments.Count();
+        }
+
         public PaymentInformation(string loanName, decimal interestPaid, decimal apr, decimal totalAmountPaid, decimal estimatedPayment, decimal lastPayment, int numberOfPayments)
         {
             LoanName = loanName;
