@@ -21,6 +21,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("Debt Options");
                 Console.WriteLine("-------------------------");
                 Console.WriteLine("Total Debt: {0:C}", _totalCurrentDebt);
+                Console.WriteLine("Total Necessary Income: {0:C}", _totalNecessaryIncome);
                 Console.WriteLine("----- Current Debts -----");
                 DebtCollection.ListDebts();
                 Console.WriteLine("-------------------------");
@@ -76,8 +77,10 @@ namespace DebtCalculator.Models.Menus
 
             apr = apr / 100.0m;
 
-            DebtCollection.AddDebt(new Debt(name, apr, balance));
+            var newDebt = new Debt(name, apr, balance)
+            DebtCollection.AddDebt(newDebt);
             _totalCurrentDebt = DebtCollection.TotalDebt;
+            _totalNecessaryIncome += newDebt.GetMinimumPayment();
         }
     }
 }

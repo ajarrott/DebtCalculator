@@ -10,6 +10,7 @@ namespace DebtCalculator.Models.Menus
     {
         static decimal _totalCurrentDebt = 0.00m;
         static decimal _totalIncome = 0.00m;
+        static decimal _totalNecessaryIncome = 0.00m;
 
         static readonly ConsoleKeyInfo dummyKey = new ConsoleKeyInfo('A', ConsoleKey.A, false, false, false);
 
@@ -24,7 +25,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("Debt Calculator");
                 Console.WriteLine("---------------");
                 Console.WriteLine("1: Debt Options (Current Total: {0:C})", _totalCurrentDebt);
-                Console.WriteLine("2: Modify Income allocated to debt (Currently: {0:C})", _totalIncome);
+                Console.WriteLine("2: Modify Income allocated to debt (Currently: {0:C}, need {1:C})", _totalIncome, _totalNecessaryIncome);
                 Console.WriteLine("3: Payoff Calculator");
                 Console.WriteLine("4: Save to Xml");
                 Console.WriteLine("5: Load from Xml");

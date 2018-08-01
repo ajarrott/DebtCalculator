@@ -69,12 +69,18 @@ namespace DebtCalculator.Models.Menus
 
         private static void CalculateOptimalPayoff()
         {
-            var highestMinFirst = DebtCollection.GetDebts.OrderBy(x => x.GetMinimumPayment());
-
-            /*foreach(var loan in DebtCollection.GetDebts)
+            if(_totalNecessaryIncome < _totalIncome)
             {
-                loan.GetMinimumPayment
-            }*/
+                Console.WriteLine("Must have at least {0:C} (current income: {1:C})", _totalNecessaryIncome, _totalIncome);
+                return;
+            }
+
+            var highestMinFirst = DebtCollection.GetDebts.OrderBy(x => x.GetMinimumPayment());
+            
+            for(int i = 0; i < highestMinFirst.Count(); i++)
+            {
+                
+            }
         }
 
         private static void CalculateManualEntry()

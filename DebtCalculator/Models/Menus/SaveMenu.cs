@@ -50,7 +50,6 @@ namespace DebtCalculator.Models.Menus
             {
                 using (var sw = new StreamWriter(fs))
                 {
-                    sw.WriteLine("totalDebt" + _delim + _totalCurrentDebt);
                     sw.WriteLine("totalIncome" + _delim + _totalIncome);
 
                     foreach(var debt in DebtCollection.GetDebts)

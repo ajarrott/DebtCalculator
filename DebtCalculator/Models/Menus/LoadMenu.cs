@@ -53,19 +53,13 @@ namespace DebtCalculator.Models.Menus
                         {
                             string line = sr.ReadLine();
                             var items = line.Split(new string[] { _delim }, StringSplitOptions.RemoveEmptyEntries);
-
-                            if (items.Contains("totalDebt"))
-                            {
-                                _totalCurrentDebt = decimal.Parse(items[1]);
-                                Console.WriteLine("Current Debt Loaded ({0:C})", _totalCurrentDebt);
-                            }
-
+                            
                             if (items.Contains("totalIncome"))
                             {
                                 _totalIncome = decimal.Parse(items[1]);
                                 Console.WriteLine("Total Income Loaded ({0:C})", _totalIncome);
                             }
-
+                            
                             if (items.Contains("debtInfo"))
                             {
                                 Debt d = new Debt();
@@ -76,6 +70,9 @@ namespace DebtCalculator.Models.Menus
                                 DebtCollection.AddDebt(d);
                                 Console.WriteLine("Loaded Debt ({0}, {1:C}, {2:P2})", d.LoanName, d.CurrentBalance, d.Apr);
                             }
+
+                            _totalCurrentDebt = DebtCollection.GetDebts.Sum(x => x.CurrentBalance);
+                            _totalNecessaryIncome = DebtCollection.GetDebts.Sum(x => x.GetMinimumPayment());
                         }
                     }
                 }
