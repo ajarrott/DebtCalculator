@@ -35,7 +35,7 @@ namespace DebtCalculator.Models
         {
             get
             {
-                return (_currentDebts.Sum(x => x.GetMinimumPayment()));
+                return (_currentDebts.Sum(x => x.GetCurrentMinimumPayment().Amount));
             }
         }
 

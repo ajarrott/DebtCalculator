@@ -10,9 +10,10 @@ namespace DebtCalculator.Models
     internal class Payment
     {
         public Payment() { }
-        public Payment(int daysInMonth, decimal apr, decimal currentBalance, decimal amount = 0.00m)
+        public Payment(string loanName, DateTime currentMonth, decimal apr, decimal currentBalance, decimal amount = 0.00m)
         {
-            DaysInMonth = daysInMonth;
+            LoanName = loanName;
+            CurrentMonth = currentMonth;
             Apr = apr;
             CurrentBalance = currentBalance;
             Amount = amount == 0.00m ? MinPayment : amount;
@@ -23,9 +24,18 @@ namespace DebtCalculator.Models
             }
         }
 
-        public int DaysInMonth { get; set; }
+        public string LoanName { get; set; }
         public decimal Apr { get; set; }
         public decimal CurrentBalance { get; set; }
+        public DateTime CurrentMonth { get; set; }
+
+        public int DaysInMonth
+        {
+            get
+            {
+                return DateTime.DaysInMonth(CurrentMonth.Year, CurrentMonth.Month);
+            }
+        }
 
         public decimal DayDecimal
         {
@@ -81,6 +91,11 @@ namespace DebtCalculator.Models
             {
                 return (CurrentBalance * 0.01m) + Interest;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0} - {1}: {2:C}", CurrentMonth.ToString("MMMM yyyy"), LoanName, Amount);
         }
     }
 }

@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\Extensions.cs" />
     <Compile Include="Interfaces\SaveLoad.cs" />
     <Compile Include="Models\Debt.cs" />
     <Compile Include="Models\DebtCollection.cs" />

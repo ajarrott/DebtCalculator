@@ -75,12 +75,38 @@ namespace DebtCalculator.Models.Menus
                 return;
             }
 
-            var highestMinFirst = DebtCollection.GetDebts.OrderBy(x => x.GetMinimumPayment());
-            
-            for(int i = 0; i < highestMinFirst.Count(); i++)
+            decimal allowance = _totalIncome;
+            decimal extraIncome = _totalIncome - DebtCollection.TotalRequiredIncome;
+
+            var mostInterest = DebtCollection.GetDebts.OrderByDescending(x => x.GetCurrentMinimumPayment().Interest).Select(x => new Debt(x.LoanName, x.Apr, x.CurrentBalance)).ToList();
+            List<Payment> allPayments = new List<Payment>();
+
+            // highest will be first in list
+            while (mostInterest.Any(x => x.CurrentBalance > 0.00m))
             {
-                
+                extraIncome = _totalIncome - (mostInterest.Sum(x => x.GetCurrentMinimumPayment().Amount));
+
+                for (int i = 0; i < mostInterest.Count(); i++)
+                {
+                    var payment = mostInterest[i].MakeSinglePayment(mostInterest[i].GetCurrentMinimumPayment().Amount + extraIncome);
+
+                    // don't add 0 payment
+                    if (payment.Amount == 0.00m) continue;
+
+                    allPayments.Add(payment);
+                }
+
+                mostInterest = mostInterest.OrderByDescending(x => x.GetCurrentMinimumPayment().Interest).ToList();
             }
+
+
+            foreach(var pmt in allPayments)
+            {
+                Console.WriteLine(pmt.ToString());
+            }
+
+            Console.Write("Press any key to continue...");
+            Console.ReadKey();
         }
 
         private static void CalculateManualEntry()
@@ -95,7 +121,7 @@ namespace DebtCalculator.Models.Menus
                 {
                     Console.WriteLine(debts[i].ToString());
                     Console.Write("Amount to Pay (must be above min payment): ");
-                } while (decimal.TryParse(Console.ReadLine(), out amount) && amount < debts[i].GetMinimumPayment());
+                } while (decimal.TryParse(Console.ReadLine(), out amount) && amount < debts[i].GetCurrentMinimumPayment().Amount);
 
                 amountsToPay.Add(amount);
             }

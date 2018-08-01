@@ -45,7 +45,7 @@ namespace DebtCalculator.Models
 
             while (currentBalance > 0.00m)
             {
-                Payment pmt = new Payment(DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month), Apr, currentBalance, estimatedPayment);
+                Payment pmt = new Payment(LoanName, currentMonth, Apr, currentBalance, estimatedPayment);
 
                 // last payment
                 payments.Add(pmt);
@@ -61,31 +61,42 @@ namespace DebtCalculator.Models
             return new PaymentInformation(LoanName, Apr, estimatedPayment, payments);
         }
 
+        private int DaysInMonth(DateTime? currentMonth = null)
+        {
+            return DateTime.DaysInMonth(currentMonth?.Year ?? CurrentMonth.Year, currentMonth?.Month ?? CurrentMonth.Month);
+        }
+
+        public Payment GetCurrentMinimumPayment()
+        {
+            return new Payment(LoanName, CurrentMonth, Apr, CurrentBalance);
+        }
+
         /// <summary>
         /// This WILL modify the current class's CurrentMonth and CurrentBalance
         /// Make payment to loan returns payment information
         /// Adds payment to Payments within this class
         /// </summary>
-        /// <param name="payment"></param>
+        /// <param name="amount"></param>
         /// <returns></returns>
-        public Payment MakeSinglePayment(decimal payment)
+        public Payment MakeSinglePayment(decimal amount)
         {
-            Payment pmt = new Payment(DateTime.DaysInMonth(CurrentMonth.Year, CurrentMonth.Month), Apr, CurrentBalance, payment);
+            Payment pmt = new Payment(LoanName, CurrentMonth, Apr, CurrentBalance, amount);
             CurrentBalance = CurrentBalance - pmt.AmountPaidToPrincipal;
             CurrentMonth = CurrentMonth.AddMonths(1);
             Payments.Add(pmt);
             return pmt;
         }
 
-        public decimal GetMinimumPayment()
-        {
-            DateTime currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            var days = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
-            var dayDecimal = days / 365.0m;
-            var interestRatio = dayDecimal * Apr;
-            decimal interest = CurrentBalance * interestRatio;
-            return ((CurrentBalance * 0.01m) + interest);
-        }
+        //public decimal GetMinimumPayment()
+        //{
+        //    Payment pmt = new Payment()
+        //    DateTime currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        //    var days = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
+        //    var dayDecimal = days / 365.0m;
+        //    var interestRatio = dayDecimal * Apr;
+        //    decimal interest = CurrentBalance * interestRatio;
+        //    return ((CurrentBalance * 0.01m) + interest);
+        //}
 
         public override void LoadString(string s)
         {
@@ -104,7 +115,7 @@ namespace DebtCalculator.Models
 
         public override string ToString()
         {
-            return string.Format("Name({0})\tBal({1:C})\tInterest({2:P2})\tMin Payment({3:C})", LoanName, CurrentBalance, Apr, GetMinimumPayment());
+            return string.Format("Name({0})\tBal({1:C})\tInterest({2:P2})\tMin Payment({3:C})", LoanName, CurrentBalance, Apr, GetCurrentMinimumPayment());
         }
     }
 }
