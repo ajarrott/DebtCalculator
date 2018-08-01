@@ -69,9 +69,9 @@ namespace DebtCalculator.Models.Menus
 
         private static void CalculateOptimalPayoff()
         {
-            if(_totalNecessaryIncome < _totalIncome)
+            if(_totalIncome < DebtCollection.TotalRequiredIncome)
             {
-                Console.WriteLine("Must have at least {0:C} (current income: {1:C})", _totalNecessaryIncome, _totalIncome);
+                Console.WriteLine("Must have at least {0:C} (current income: {1:C})", DebtCollection.TotalRequiredIncome, _totalIncome);
                 return;
             }
 

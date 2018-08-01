@@ -27,7 +27,15 @@ namespace DebtCalculator.Models
         {
             get
             {
-                return (_currentDebts.Select(x => x.CurrentBalance).Sum());
+                return (_currentDebts.Sum(x => x.CurrentBalance));
+            }
+        }
+
+        public static decimal TotalRequiredIncome
+        {
+            get
+            {
+                return (_currentDebts.Sum(x => x.GetMinimumPayment()));
             }
         }
 

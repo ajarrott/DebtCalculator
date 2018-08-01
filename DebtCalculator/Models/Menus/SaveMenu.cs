@@ -22,7 +22,8 @@ namespace DebtCalculator.Models.Menus
                 Console.Clear();
                 Console.WriteLine("-------------------------");
                 Console.WriteLine("Save current settings");
-                Console.WriteLine("Total Debt: {0:C}", _totalCurrentDebt);
+                Console.WriteLine("Total Debt: {0:C}", DebtCollection.TotalDebt);
+                Console.WriteLine("Total Required Income: {0:C}", DebtCollection.TotalRequiredIncome);
                 Console.WriteLine("Total Income: {0:C}", _totalIncome);
                 DebtCollection.ListDebts();
                 Console.WriteLine("-------------------------");

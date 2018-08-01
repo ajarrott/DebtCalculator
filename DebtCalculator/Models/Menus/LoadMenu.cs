@@ -22,7 +22,8 @@ namespace DebtCalculator.Models.Menus
                 Console.Clear();
                 Console.WriteLine("-------------------------");
                 Console.WriteLine("Load settings (this will remove all unsaved information)");
-                Console.WriteLine("Total Debt: {0:C}", _totalCurrentDebt);
+                Console.WriteLine("Total Debt: {0:C}", DebtCollection.TotalDebt);
+                Console.WriteLine("Total Required Income: {0:C}", DebtCollection.TotalRequiredIncome);
                 Console.WriteLine("Total Income: {0:C}", _totalIncome);
                 DebtCollection.ListDebts();
                 Console.WriteLine("-------------------------");
@@ -70,9 +71,6 @@ namespace DebtCalculator.Models.Menus
                                 DebtCollection.AddDebt(d);
                                 Console.WriteLine("Loaded Debt ({0}, {1:C}, {2:P2})", d.LoanName, d.CurrentBalance, d.Apr);
                             }
-
-                            _totalCurrentDebt = DebtCollection.GetDebts.Sum(x => x.CurrentBalance);
-                            _totalNecessaryIncome = DebtCollection.GetDebts.Sum(x => x.GetMinimumPayment());
                         }
                     }
                 }
