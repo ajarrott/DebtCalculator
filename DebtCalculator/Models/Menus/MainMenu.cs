@@ -25,7 +25,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("---------------");
                 Console.WriteLine("1: Debt Options (Current Total: {0:C})", _totalCurrentDebt);
                 Console.WriteLine("2: Modify Income allocated to debt (Currently: {0:C})", _totalIncome);
-                Console.WriteLine("3: Calculate Payoffs");
+                Console.WriteLine("3: Payoff Calculator");
                 Console.WriteLine("4: Save to Xml");
                 Console.WriteLine("5: Load from Xml");
                 Console.WriteLine("Q: Exit");
@@ -35,7 +35,7 @@ namespace DebtCalculator.Models.Menus
                 keyInfo = Console.ReadKey();
 
                 validKey = (keyInfo.KeyChar >= '1'
-                   && keyInfo.KeyChar <= '4')
+                   && keyInfo.KeyChar <= '5')
                    || keyInfo.KeyChar == 'q'
                    || keyInfo.KeyChar == 'Q';
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("-------------------------");
                 Console.Write("Continue(Y/N): ");
                 key = Console.ReadKey();
+                Console.WriteLine();
                 validInput = key.Key == ConsoleKey.Y || key.Key == ConsoleKey.N;
             } while (!validInput);
     
@@ -37,11 +39,14 @@ namespace DebtCalculator.Models.Menus
             }
 
             OpenFileDialog fd = new OpenFileDialog();
+            fd.InitialDirectory = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
 
             if(fd.ShowDialog() == DialogResult.OK)
             {
                 using (var fs = new FileStream(fd.FileName, FileMode.Open))
                 {
+                    // clear any current debts
+                    DebtCollection.ClearDebts();
                     using (var sr = new StreamReader(fs))
                     {
                         while (!sr.EndOfStream)
@@ -52,14 +57,16 @@ namespace DebtCalculator.Models.Menus
                             if (items.Contains("totalDebt"))
                             {
                                 _totalCurrentDebt = decimal.Parse(items[1]);
+                                Console.WriteLine("Current Debt Loaded ({0:C})", _totalCurrentDebt);
                             }
 
                             if (items.Contains("totalIncome"))
                             {
                                 _totalIncome = decimal.Parse(items[1]);
+                                Console.WriteLine("Total Income Loaded ({0:C})", _totalIncome);
                             }
 
-                            if (items.Contains("debt"))
+                            if (items.Contains("debtInfo"))
                             {
                                 Debt d = new Debt();
                                 d.LoadString(line);
@@ -67,10 +74,15 @@ namespace DebtCalculator.Models.Menus
                                 if (string.IsNullOrEmpty(d.LoanName)) continue;
 
                                 DebtCollection.AddDebt(d);
+                                Console.WriteLine("Loaded Debt ({0}, {1:C}, {2:P2})", d.LoanName, d.CurrentBalance, d.Apr);
                             }
                         }
                     }
                 }
+
+                Console.Write("Loaded " + Path.GetFileName(fd.FileName) + " successfully.  Press any key to continue...");
+                Console.ReadKey();
+                Console.WriteLine();
             }
         }
     }

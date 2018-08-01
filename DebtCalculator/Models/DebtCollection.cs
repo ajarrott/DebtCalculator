@@ -46,5 +46,10 @@ namespace DebtCalculator.Models
                 return _currentDebts;
             }
         }
+
+        internal static void ClearDebts()
+        {
+            _currentDebts.Clear();
+        }
     }
 }

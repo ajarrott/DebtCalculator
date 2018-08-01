@@ -30,38 +30,21 @@ namespace DebtCalculator
                         Menu.DisplayModifyIncome();
                         break;
                     case ConsoleKey.D3:
+                        //Calculate Payoff amounts
                         Menu.CalculatePayoffs();
                         break;
                     case ConsoleKey.D4:
                         //Save
+                        Menu.DisplaySave();
                         break;
                     case ConsoleKey.D5:
+                        Menu.DisplayLoad();
+                        //Load
                         break;
                     case ConsoleKey.Q:
                         return;
                 }
             }
-
-
-            // Test Code
-            // TODO: Move to unit tests
-            /*loans.Add(new Debt("CapitalOne", .2599m, 10100.00m));
-
-            foreach(var loan in loans)
-            {
-                try
-                {
-                    Console.WriteLine(loans[0].CalculatePayoff(410).ToString());
-                }
-                catch(Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-            }
-            
-            Console.ReadLine();*/
         }
-
-
     }
 }

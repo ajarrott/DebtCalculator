@@ -26,15 +26,15 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("Total Income: {0:C}", _totalIncome);
                 DebtCollection.ListDebts();
                 Console.WriteLine("-------------------------");
-                Console.Write("FileName (default \'debt.xml\'): ");
+                Console.Write("FileName (default \'debt.sav\'): ");
                 fileName = Console.ReadLine();
 
-                fileName = string.IsNullOrWhiteSpace(fileName) ? "debt.xml" : fileName;
+                fileName = string.IsNullOrWhiteSpace(fileName) ? "debt.sav" : fileName;
                 fileName = Directory.GetCurrentDirectory() + "\\" + fileName;
 
                 try
                 {
-                    File.Create(fileName);
+                    File.Create(fileName).Close();
                 }
                 catch (IOException e)
                 {
@@ -59,6 +59,10 @@ namespace DebtCalculator.Models.Menus
                     }
                 }
             }
+
+            Console.Write(Path.GetFileName(fileName) + " created successfully.  Press any key to continue...");
+            Console.ReadKey();
+            Console.WriteLine();
         }
     }
 }
