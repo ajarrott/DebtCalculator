@@ -20,15 +20,19 @@ namespace DebtCalculator.Models.Menus
             do
             {
                 Console.Clear();
-                Console.WriteLine("-------------------------");
+                Console.WriteLine("---------------------");
                 Console.WriteLine("Save current settings");
+                Console.WriteLine("---------------------");
                 Console.WriteLine("Total Debt: {0:C}", DebtCollection.TotalDebt);
                 Console.WriteLine("Total Required Income: {0:C}", DebtCollection.TotalRequiredIncome);
                 Console.WriteLine("Total Income: {0:C}", _totalIncome);
+                Console.WriteLine("---------------------");
                 DebtCollection.ListDebts();
-                Console.WriteLine("-------------------------");
-                Console.Write("FileName (default \'debt.sav\'): ");
+                Console.WriteLine("---------------------");
+                Console.Write("FileName (default \'debt.sav\', C to cancel): ");
                 fileName = Console.ReadLine();
+
+                if (fileName.ToLower() == "c") return;
 
                 fileName = string.IsNullOrWhiteSpace(fileName) ? "debt.sav" : fileName;
                 fileName = Directory.GetCurrentDirectory() + "\\" + fileName;

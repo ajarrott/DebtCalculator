@@ -9,15 +9,13 @@ namespace DebtCalculator.Models.Menus
     internal static partial class Menu
     {
         static decimal _totalIncome = 0.00m;
+        static bool quit = false;
 
-        static readonly ConsoleKeyInfo dummyKey = new ConsoleKeyInfo('A', ConsoleKey.A, false, false, false);
-
-        public static ConsoleKey DisplayMainMenu()
+        public static void DisplayMainMenu()
         {
-            ConsoleKeyInfo keyInfo = dummyKey;
-            bool validKey = false;
+            ConsoleKeyInfo keyInfo;
 
-            while (!validKey)
+            do
             {
                 Console.Clear();
                 Console.WriteLine("Debt Calculator");
@@ -33,13 +31,33 @@ namespace DebtCalculator.Models.Menus
 
                 keyInfo = Console.ReadKey();
 
-                validKey = (keyInfo.KeyChar >= '1'
-                   && keyInfo.KeyChar <= '5')
-                   || keyInfo.KeyChar == 'q'
-                   || keyInfo.KeyChar == 'Q';
-            }
-
-            return keyInfo.Key;
+                switch (keyInfo.Key)
+                {
+                    case ConsoleKey.D1:
+                        // Debt Options
+                        Menu.DisplayDebtOptions();
+                        break;
+                    case ConsoleKey.D2:
+                        //Modify Income
+                        Menu.DisplayModifyIncome();
+                        break;
+                    case ConsoleKey.D3:
+                        //Calculate Payoff amounts
+                        Menu.CalculatePayoffs();
+                        break;
+                    case ConsoleKey.D4:
+                        //Save
+                        Menu.DisplaySave();
+                        break;
+                    case ConsoleKey.D5:
+                        Menu.DisplayLoad();
+                        //Load
+                        break;
+                    case ConsoleKey.Q:
+                        quit = true;
+                        break;
+                }
+            } while (!quit) ;
         }
     }
 }

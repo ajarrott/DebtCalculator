@@ -12,7 +12,7 @@ namespace DebtCalculator.Models.Menus
         {
             decimal tempIncome = 0.00m;
 
-            ConsoleKeyInfo key = dummyKey;
+            ConsoleKeyInfo key;
 
             do
             {
@@ -172,7 +172,7 @@ namespace DebtCalculator.Models.Menus
                 do
                 {
                     Console.WriteLine(debts[i].ToString());
-                    Console.Write("Amount to Pay (must be above min payment, C to cancel): ");
+                    Console.Write("Amount to Pay Monthly (must be above min payment, C to cancel): ");
                     input = Console.ReadLine();
 
                     if (input == "C" || input == "c") return;

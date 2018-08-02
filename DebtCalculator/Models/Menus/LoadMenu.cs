@@ -15,7 +15,7 @@ namespace DebtCalculator.Models.Menus
         {
             bool validInput = false;
 
-            ConsoleKeyInfo key = dummyKey;
+            ConsoleKeyInfo key;
 
             do
             {

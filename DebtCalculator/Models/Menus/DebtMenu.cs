@@ -10,12 +10,11 @@ namespace DebtCalculator.Models.Menus
     {
         internal static void DisplayDebtOptions()
         {
-            bool validKey = false,
-                goBack = false;
+            bool goBack = false;
 
-            ConsoleKeyInfo key = dummyKey;
+            ConsoleKeyInfo key;
 
-            while (!validKey && !goBack)
+            do
             {
                 Console.Clear();
                 Console.WriteLine("Debt Options");
@@ -31,10 +30,6 @@ namespace DebtCalculator.Models.Menus
 
                 key = Console.ReadKey();
 
-                validKey = key.Key == ConsoleKey.D1
-                    || key.Key == ConsoleKey.D2
-                    || key.Key == ConsoleKey.B;
-
                 if (key.Key == ConsoleKey.B)
                     goBack = true;
 
@@ -47,12 +42,19 @@ namespace DebtCalculator.Models.Menus
                 {
                     Menu.DisplayRemoveDebt();
                 }
-            }
+            } while (!goBack);
         }
 
         internal static void DisplayRemoveDebt()
         {
-            throw new NotImplementedException();
+            Console.Clear();
+            Console.WriteLine("Remove Debt");
+            Console.WriteLine("-------------------------");
+            Console.WriteLine("Total Debt: {0:C}", DebtCollection.TotalDebt);
+            Console.WriteLine("Total Required Income: {0:C}", DebtCollection.TotalRequiredIncome);
+            Console.WriteLine("----- Current Debts -----");
+            DebtCollection.ListDebts();
+            Console.WriteLine("-------------------------");
         }
 
         internal static void DisplayAddDebt()
