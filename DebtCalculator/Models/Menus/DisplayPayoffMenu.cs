@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DebtCalculator.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,6 @@ namespace DebtCalculator.Models.Menus
     {
         public static void CalculatePayoffs()
         {
-            decimal tempIncome = 0.00m;
-
             ConsoleKeyInfo key;
 
             do
@@ -23,7 +22,8 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("1: Manual Entry (Estimate Payoff)");
                 Console.WriteLine("2: Generate Payment Plan (Highest Interest per Month First)");
                 Console.WriteLine("3: Generate Payment Plan (Snowball, Lowest Balance First)");
-                Console.WriteLine("4: Update Current Excess Income ({0:C}, {1:C} Required)", _totalIncome, DebtCollection.TotalRequiredIncome);
+                Console.WriteLine("4: Highest Interest first vs Snowball interest difference");
+                Console.WriteLine("5: Modify Income allocated to debt (Currently: {0:C}, need {1:C})", DebtCollection.TotalIncome, DebtCollection.TotalRequiredIncome);
                 Console.WriteLine("B: Go Back");
                 Console.WriteLine("---------------------");
                 Console.Write("Selection: ");
@@ -43,22 +43,64 @@ namespace DebtCalculator.Models.Menus
 
                 if (key.Key == ConsoleKey.D2)
                 {
-                    CalculateOptimalPayoff();
+                    if (!IncomeHighEnough()) continue;
+
+                    var pmts = CalculateOptimalPayoff();
+                    DisplayPayments(pmts);
                 }
 
                 if (key.Key == ConsoleKey.D3)
                 {
-                    CalculateSnowballPayoff();
+                    if (!IncomeHighEnough()) continue;
+
+                    var pmts  = CalculateSnowballPayoff();
+                    DisplayPayments(pmts);
                 }
 
-                if (key.Key == ConsoleKey.D4)
+                if(key.Key == ConsoleKey.D4)
                 {
-                    do
-                    {
-                        Console.Write("Enter new excess income amount (e.g. 5000): ");
-                    } while (!decimal.TryParse(Console.ReadLine(), out tempIncome));
+                    if (!IncomeHighEnough()) continue;
 
-                    _totalIncome = tempIncome;
+                    var opt = CalculateOptimalPayoff();
+                    var snow = CalculateSnowballPayoff();
+
+                    var optAmt = opt.Sum(x => x.Amount);
+                    var snowAmt = snow.Sum(x => x.Amount);
+
+                    var optNumMonths = opt.GroupBy(x => x.CurrentMonth).Count();
+                    var snowNumMonths = snow.GroupBy(x => x.CurrentMonth).Count();
+
+                    Console.WriteLine("Monthly allocation: {0:C}", DebtCollection.TotalIncome);
+                    Console.WriteLine("--------- Highest Interest First ---------");
+                    Console.WriteLine("Total paid: {0:C}", optAmt);
+                    Console.WriteLine("Last Payment: {0:C}", opt.Last().Amount);
+                    Console.WriteLine("Months to payoff: {0}", optNumMonths);
+                    Console.WriteLine("---------------- Snowball ----------------");
+                    Console.WriteLine("Total paid: {0:C}", snowAmt);
+                    Console.WriteLine("Last Payment: {0:C}", snow.Last().Amount);
+                    Console.WriteLine("Months to payoff: {0}", snowNumMonths);
+                    Console.WriteLine("------------------------------------------");
+
+                    if (snowAmt > optAmt )
+                    {
+                        Console.WriteLine("Snowball payments will cost {0:C} more than optimal payoff.", snowAmt - optAmt);
+                    }
+                    else if(snowAmt == optAmt)
+                    {
+                        Console.WriteLine("Snowball payments and Optimal payments are the same.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Somehow snowball payments will save you {0:C}", optAmt - snowAmt);
+                    }
+
+                    Console.Write("Press any key to continue...");
+                    Console.ReadKey();
+                }
+
+                if (key.Key == ConsoleKey.D5)
+                {
+                    DisplayModifyIncome();
                 }
 
             } while (true);
@@ -66,20 +108,17 @@ namespace DebtCalculator.Models.Menus
 
         private static bool IncomeHighEnough()
         {
-            if (_totalIncome >= DebtCollection.TotalRequiredIncome) return true;
+            if (DebtCollection.TotalIncome >= DebtCollection.TotalRequiredIncome) return true;
             
-            Console.WriteLine("Must have at least {0:C} (current income: {1:C})", DebtCollection.TotalRequiredIncome, _totalIncome);
+            Console.WriteLine("Must have at least {0:C} (current income: {1:C})", DebtCollection.TotalRequiredIncome, DebtCollection.TotalIncome);
             Console.Write("Press any key to continue...");
             Console.ReadKey();
             return false;
         }
 
-        private static void CalculateSnowballPayoff()
-        {
-            if (!IncomeHighEnough()) return;
-
-            decimal allowance = _totalIncome;
-            decimal extraIncome = _totalIncome - DebtCollection.TotalRequiredIncome;
+        private static List<Payment> CalculateSnowballPayoff()
+        {            
+            decimal extraIncome = DebtCollection.TotalIncome - DebtCollection.TotalRequiredIncome;
 
             // get copy of list
             var lowestFirst = DebtCollection.GetDebts.OrderBy(x => x.GetCurrentMinimumPayment().StartingBalance).Select(x => new Debt(x.LoanName, x.Apr, x.CurrentBalance)).ToList();
@@ -93,13 +132,11 @@ namespace DebtCalculator.Models.Menus
                 lowestFirst = lowestFirst.OrderBy(x => x.GetCurrentMinimumPayment().StartingBalance).ToList();
             }
 
-            DisplayPayments(allPayments);
+            return allPayments;
         }
 
-        private static void CalculateOptimalPayoff()
+        private static List<Payment> CalculateOptimalPayoff()
         {
-            if (!IncomeHighEnough()) return;
-
             var mostInterest = DebtCollection.GetDebts.OrderByDescending(x => x.GetCurrentMinimumPayment().Interest).Select(x => new Debt(x.LoanName, x.Apr, x.CurrentBalance)).ToList();
             List<Payment> allPayments = new List<Payment>();
 
@@ -112,7 +149,7 @@ namespace DebtCalculator.Models.Menus
                 mostInterest = mostInterest.OrderByDescending(x => x.GetCurrentMinimumPayment().Interest).ToList();
             }
 
-            DisplayPayments(allPayments);
+            return allPayments;
         }
 
         private static void DisplayPayments(List<Payment> payments)
@@ -122,6 +159,8 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine(pmt.ToString());
             }
 
+            Console.WriteLine(payments.HorizontalPaymentInfo());
+
             Console.Write("Press any key to continue...");
             Console.ReadKey();
         }
@@ -129,7 +168,7 @@ namespace DebtCalculator.Models.Menus
         private static IEnumerable<Payment> PaymentLogic(IList<Debt> debts)
         {
             List<Payment> currentMonthPayments = new List<Payment>();
-            decimal extraIncome = _totalIncome - (debts.Sum(x => x.GetCurrentMinimumPayment().Amount));
+            decimal extraIncome = DebtCollection.TotalIncome - (debts.Sum(x => x.GetCurrentMinimumPayment().Amount));
             for (int i = 0; i < debts.Count(); i++)
             {
                 decimal amountToPay = debts[i].GetCurrentMinimumPayment().Amount;

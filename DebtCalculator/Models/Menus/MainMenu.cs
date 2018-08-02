@@ -8,7 +8,6 @@ namespace DebtCalculator.Models.Menus
 {
     internal static partial class Menu
     {
-        static decimal _totalIncome = 0.00m;
         static bool quit = false;
 
         public static void DisplayMainMenu()
@@ -21,7 +20,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("Debt Calculator");
                 Console.WriteLine("---------------");
                 Console.WriteLine("1: Debt Options (Current Total: {0:C})", DebtCollection.TotalDebt);
-                Console.WriteLine("2: Modify Income allocated to debt (Currently: {0:C}, need {1:C})", _totalIncome, DebtCollection.TotalRequiredIncome);
+                Console.WriteLine("2: Modify Income allocated to debt (Currently: {0:C}, need {1:C})", DebtCollection.TotalIncome, DebtCollection.TotalRequiredIncome);
                 Console.WriteLine("3: Payoff Calculator");
                 Console.WriteLine("4: Save to Xml");
                 Console.WriteLine("5: Load from Xml");

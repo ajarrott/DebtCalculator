@@ -10,6 +10,8 @@ namespace DebtCalculator.Models
     {
         static List<Debt> _currentDebts = new List<Debt>();
 
+        public static decimal TotalIncome { get; set; } = 0.00m;
+
         public static void AddDebt(Debt debt)
         {
             _currentDebts.Add(debt);

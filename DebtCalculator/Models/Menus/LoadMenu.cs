@@ -24,7 +24,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("Load settings (this will remove all unsaved information)");
                 Console.WriteLine("Total Debt: {0:C}", DebtCollection.TotalDebt);
                 Console.WriteLine("Total Required Income: {0:C}", DebtCollection.TotalRequiredIncome);
-                Console.WriteLine("Total Income: {0:C}", _totalIncome);
+                Console.WriteLine("Total Income: {0:C}", DebtCollection.TotalIncome);
                 DebtCollection.ListDebts();
                 Console.WriteLine("-------------------------");
                 Console.Write("Continue(Y/N): ");
@@ -57,8 +57,8 @@ namespace DebtCalculator.Models.Menus
                             
                             if (items.Contains("totalIncome"))
                             {
-                                _totalIncome = decimal.Parse(items[1]);
-                                Console.WriteLine("Total Income Loaded ({0:C})", _totalIncome);
+                                DebtCollection.TotalIncome = decimal.Parse(items[1]);
+                                Console.WriteLine("Total Income Loaded ({0:C})", DebtCollection.TotalIncome);
                             }
                             
                             if (items.Contains("debtInfo"))

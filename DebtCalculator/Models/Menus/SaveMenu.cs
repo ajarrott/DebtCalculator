@@ -25,7 +25,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("---------------------");
                 Console.WriteLine("Total Debt: {0:C}", DebtCollection.TotalDebt);
                 Console.WriteLine("Total Required Income: {0:C}", DebtCollection.TotalRequiredIncome);
-                Console.WriteLine("Total Income: {0:C}", _totalIncome);
+                Console.WriteLine("Total Income: {0:C}", DebtCollection.TotalIncome);
                 Console.WriteLine("---------------------");
                 DebtCollection.ListDebts();
                 Console.WriteLine("---------------------");
@@ -55,7 +55,7 @@ namespace DebtCalculator.Models.Menus
             {
                 using (var sw = new StreamWriter(fs))
                 {
-                    sw.WriteLine("totalIncome" + _delim + _totalIncome);
+                    sw.WriteLine("totalIncome" + _delim + DebtCollection.TotalIncome);
 
                     foreach(var debt in DebtCollection.GetDebts)
                     {

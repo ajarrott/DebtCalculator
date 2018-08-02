@@ -64,7 +64,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("----- Current Debts -----");
                 DebtCollection.ListDebts();
                 Console.WriteLine("-------------------------");
-                Console.Write("Debt to remove (B to go back)");
+                Console.Write("Debt to modify (B to go back)");
                 var key = Console.ReadKey();
 
                 if (key.KeyChar == 'b' || key.KeyChar == 'B')
@@ -189,21 +189,44 @@ namespace DebtCalculator.Models.Menus
         {
             decimal balance = 0.00m;
             decimal apr = 0.00m;
+            string name = "";
+            string input = "";
+            bool validName = false;
+
             Console.Clear();
             Console.WriteLine("Adding Debt");
             Console.WriteLine("-----------");
-            Console.Write("Debt Name: ");
-            string name = Console.ReadLine();
+            Console.WriteLine("Blank entry will cancel addition");
 
+            do
+            {
+                Console.Write("Debt Name: ");
+                input = Console.ReadLine();
+
+                validName = !DebtCollection.GetDebts.Exists(x => x.LoanName == input);
+
+                if (!validName) Console.WriteLine("Loan Name {0} already exists!", input);
+            } while (!validName);
+
+
+            if (string.IsNullOrWhiteSpace(input)) return;
+            name = input;
+            
             do
             {
                 Console.Write("Balance (e.g. 5000): ");
-            } while (!decimal.TryParse(Console.ReadLine(), out balance));
+                input = Console.ReadLine();
 
+                if (string.IsNullOrWhiteSpace(input)) return;
+            } while (!decimal.TryParse(input, out balance));
+            
             do
             {
                 Console.Write("APR (e.g. 22.99): ");
-            } while (!decimal.TryParse(Console.ReadLine(), out apr));
+                input = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(input)) return;
+            } while (!decimal.TryParse(input, out apr));
 
             apr = apr / 100.0m;
 

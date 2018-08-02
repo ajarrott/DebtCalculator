@@ -17,14 +17,14 @@ namespace DebtCalculator.Models.Menus
                 Console.Clear();
                 Console.WriteLine("Modifying Income");
                 Console.WriteLine("-----------------------------------");
-                Console.WriteLine("Current Excess Income for Debts: {0}", _totalIncome);
+                Console.WriteLine("Current Amount Allocated for Debts: {0:C}", DebtCollection.TotalIncome);
                 Console.WriteLine("-----------------------------------");
                 Console.Write("Amount to allocate (e.g. 1000, blank to cancel)): ");
                 input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input)) return;
             } while (!decimal.TryParse(input, out tempIncome));
 
-            _totalIncome = tempIncome;
+            DebtCollection.TotalIncome = tempIncome;
         }
     }
 }
