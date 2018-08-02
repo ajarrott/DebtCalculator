@@ -171,8 +171,11 @@ namespace DebtCalculator.Models.Menus
                 do
                 {
                     Console.WriteLine(debts[i].ToString());
-                    Console.Write("Amount to Pay (must be above min payment): ");
-                } while (decimal.TryParse(Console.ReadLine(), out amount) && amount < debts[i].GetCurrentMinimumPayment().Amount);
+                    Console.Write("Amount to Pay (must be above min payment, C to cancel): ");
+                    var input = Console.ReadLine();
+
+                    if (input == "C" || input == "c") return;
+                } while (decimal.TryParse(input, out amount) && amount < debts[i].GetCurrentMinimumPayment().Amount);
 
                 amountsToPay.Add(amount);
             }
