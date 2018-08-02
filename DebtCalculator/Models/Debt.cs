@@ -81,7 +81,7 @@ namespace DebtCalculator.Models
         public Payment MakeSinglePayment(decimal amount)
         {
             Payment pmt = new Payment(LoanName, CurrentMonth, Apr, CurrentBalance, amount);
-            CurrentBalance = CurrentBalance - pmt.AmountPaidToPrincipal;
+            CurrentBalance = pmt.NewBalance;
             CurrentMonth = CurrentMonth.AddMonths(1);
             Payments.Add(pmt);
             return pmt;

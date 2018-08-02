@@ -13,7 +13,7 @@ namespace DebtCalculator.Models.Menus
             decimal tempIncome = 0.00m;
 
             ConsoleKeyInfo key = dummyKey;
-            bool validInput = false;
+
             do
             {
                 Console.Clear();
@@ -22,7 +22,7 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("---------------------");
                 Console.WriteLine("1: Manual Entry (Estimate Payoff)");
                 Console.WriteLine("2: Generate Payment Plan");
-                Console.WriteLine("3: Update Current Excess Income ({0:C})", _totalIncome);
+                Console.WriteLine("3: Update Current Excess Income ({0:C}, {1:C} Required)", _totalIncome, DebtCollection.TotalRequiredIncome);
                 Console.WriteLine("B: Go Back");
                 Console.WriteLine("---------------------");
                 Console.Write("Selection: ");
@@ -30,12 +30,19 @@ namespace DebtCalculator.Models.Menus
                 key = Console.ReadKey();
                 Console.WriteLine();
 
-                // keep looping while updating the excess income
-                validInput = (key.KeyChar >= '1' && key.KeyChar <= '2');
-
                 if (key.Key == ConsoleKey.B)
                 {
                     return;
+                }
+
+                if (key.Key == ConsoleKey.D1)
+                {
+                    CalculateManualEntry();
+                }
+
+                if (key.Key == ConsoleKey.D2)
+                {
+                    CalculateOptimalPayoff();
                 }
 
                 if (key.Key == ConsoleKey.D3)
@@ -48,23 +55,7 @@ namespace DebtCalculator.Models.Menus
                     _totalIncome = tempIncome;
                 }
 
-            } while (!validInput);
-
-            if(key.Key == ConsoleKey.D1)
-            {
-                CalculateManualEntry();
-            }
-
-            if(key.Key == ConsoleKey.D2)
-            {
-                CalculateOptimalPayoff();
-            }
-            
-
-            Console.WriteLine();
-            Console.WriteLine("Press any key to continue...");
-            Console.ReadKey();
-            Console.WriteLine();
+            } while (true);
         }
 
         private static void CalculateOptimalPayoff()
@@ -72,6 +63,8 @@ namespace DebtCalculator.Models.Menus
             if(_totalIncome < DebtCollection.TotalRequiredIncome)
             {
                 Console.WriteLine("Must have at least {0:C} (current income: {1:C})", DebtCollection.TotalRequiredIncome, _totalIncome);
+                Console.Write("Press any key to continue...");
+                Console.ReadKey();
                 return;
             }
 
@@ -82,13 +75,28 @@ namespace DebtCalculator.Models.Menus
             List<Payment> allPayments = new List<Payment>();
 
             // highest will be first in list
-            while (mostInterest.Any(x => x.CurrentBalance > 0.00m))
+            while (mostInterest.Any(x => x.CurrentBalance > 1.00m))
             {
                 extraIncome = _totalIncome - (mostInterest.Sum(x => x.GetCurrentMinimumPayment().Amount));
 
                 for (int i = 0; i < mostInterest.Count(); i++)
                 {
-                    var payment = mostInterest[i].MakeSinglePayment(mostInterest[i].GetCurrentMinimumPayment().Amount + extraIncome);
+                    decimal amountToPay = mostInterest[i].GetCurrentMinimumPayment().Amount;
+                    if(extraIncome > 0.00m && amountToPay > 0.00m)
+                    {
+                        amountToPay = amountToPay + extraIncome;
+                    }
+
+                    var payment = mostInterest[i].MakeSinglePayment(amountToPay);
+
+                    if(payment.Amount < (amountToPay))
+                    {
+                        extraIncome = (amountToPay - payment.Amount);
+                    }
+                    else
+                    {
+                        extraIncome = 0.00m;
+                    }
 
                     // don't add 0 payment
                     if (payment.Amount == 0.00m) continue;
@@ -96,6 +104,7 @@ namespace DebtCalculator.Models.Menus
                     allPayments.Add(payment);
                 }
 
+                var db = mostInterest.OrderByDescending(x => x.GetCurrentMinimumPayment().Interest).Select(x => x.GetCurrentMinimumPayment().Interest).ToList();
                 mostInterest = mostInterest.OrderByDescending(x => x.GetCurrentMinimumPayment().Interest).ToList();
             }
 

@@ -10,23 +10,28 @@ namespace DebtCalculator.Models
     internal class Payment
     {
         public Payment() { }
-        public Payment(string loanName, DateTime currentMonth, decimal apr, decimal currentBalance, decimal amount = 0.00m)
+        public Payment(string loanName, DateTime currentMonth, decimal apr, decimal startingBalance, decimal amount = 0.00m)
         {
             LoanName = loanName;
             CurrentMonth = currentMonth;
             Apr = apr;
-            CurrentBalance = currentBalance;
+            StartingBalance = startingBalance;
             Amount = amount == 0.00m ? MinPayment : amount;
 
             if (Amount < MinPayment)
             {
                 throw new PaymentException(string.Format("Amount given too small, must pay at least {0:C} tried to pay {1:C}", MinPayment, Amount));
             }
+
+            if(Amount > BalanceWithInterest)
+            {
+                Amount = BalanceWithInterest;
+            }
         }
 
         public string LoanName { get; set; }
         public decimal Apr { get; set; }
-        public decimal CurrentBalance { get; set; }
+        public decimal StartingBalance { get; set; }
         public DateTime CurrentMonth { get; set; }
 
         public int DaysInMonth
@@ -57,7 +62,7 @@ namespace DebtCalculator.Models
         {
             get
             {
-                return (CurrentBalance * InterestRatio);
+                return (StartingBalance * InterestRatio);
             }
         }
 
@@ -67,8 +72,8 @@ namespace DebtCalculator.Models
         {
             get
             {
-                return _amount > CurrentBalance + Interest ?
-                    CurrentBalance + Interest
+                return _amount > StartingBalance + Interest ?
+                    StartingBalance + Interest
                     : _amount;
             }
             set
@@ -89,13 +94,29 @@ namespace DebtCalculator.Models
         {
             get
             {
-                return (CurrentBalance * 0.01m) + Interest;
+                return (StartingBalance * 0.01m) + Interest;
+            }
+        }
+
+        public decimal BalanceWithInterest
+        {
+            get
+            {
+                return (StartingBalance + Interest);
+            }
+        }
+
+        public decimal NewBalance
+        {
+            get
+            {
+                return BalanceWithInterest - Amount;
             }
         }
 
         public override string ToString()
         {
-            return string.Format("{0} - {1}: {2:C}", CurrentMonth.ToString("MMMM yyyy"), LoanName, Amount);
+            return string.Format("{0} - {1}: {2:C} (New Balance {3:C})", CurrentMonth.ToString("MMMM yyyy"), LoanName, Amount, NewBalance);
         }
     }
 }
