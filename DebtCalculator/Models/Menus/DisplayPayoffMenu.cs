@@ -164,6 +164,7 @@ namespace DebtCalculator.Models.Menus
         {
             List<decimal> amountsToPay = new List<decimal>();
             var debts = DebtCollection.GetDebts;
+            string input = "";
 
             for (int i = 0; i < debts.Count; i++)
             {
@@ -172,7 +173,7 @@ namespace DebtCalculator.Models.Menus
                 {
                     Console.WriteLine(debts[i].ToString());
                     Console.Write("Amount to Pay (must be above min payment, C to cancel): ");
-                    var input = Console.ReadLine();
+                    input = Console.ReadLine();
 
                     if (input == "C" || input == "c") return;
                 } while (decimal.TryParse(input, out amount) && amount < debts[i].GetCurrentMinimumPayment().Amount);
