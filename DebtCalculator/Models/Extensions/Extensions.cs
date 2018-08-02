@@ -1,12 +1,9 @@
-﻿using DebtCalculator.Models;
-using DebtCalculator.Models.Menus;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace DebtCalculator.Interfaces
+namespace DebtCalculator.Models.Extensions
 {
     internal static class Extensions
     {
