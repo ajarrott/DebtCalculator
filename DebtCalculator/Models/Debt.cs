@@ -115,7 +115,7 @@ namespace DebtCalculator.Models
 
         public override string ToString()
         {
-            return string.Format("Name({0})\tBal({1:C})\tInterest({2:P2})\tMin Payment({3:C})", LoanName, CurrentBalance, Apr, GetCurrentMinimumPayment());
+            return string.Format("Name({0})\tBal({1:C})\tInterest({2:P2})\tMin Payment({3:C})", LoanName, CurrentBalance, Apr, GetCurrentMinimumPayment().Amount);
         }
     }
 }

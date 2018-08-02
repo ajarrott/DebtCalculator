@@ -11,6 +11,7 @@ namespace DebtCalculator.Models.Menus
         internal static void DisplayModifyIncome()
         {
             decimal tempIncome = 0.00m;
+            string input = "";
             do
             {
                 Console.Clear();
@@ -18,8 +19,10 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("-----------------------------------");
                 Console.WriteLine("Current Excess Income for Debts: {0}", _totalIncome);
                 Console.WriteLine("-----------------------------------");
-                Console.Write("Amount to allocate (e.g. 1000): ");
-            } while (!decimal.TryParse(Console.ReadLine(), out tempIncome));
+                Console.Write("Amount to allocate (e.g. 1000, blank to cancel)): ");
+                input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input)) return;
+            } while (!decimal.TryParse(input, out tempIncome));
 
             _totalIncome = tempIncome;
         }

@@ -29,10 +29,10 @@ namespace DebtCalculator.Models.Menus
                 Console.WriteLine("---------------------");
                 DebtCollection.ListDebts();
                 Console.WriteLine("---------------------");
-                Console.Write("FileName (default \'debt.sav\', C to cancel): ");
+                Console.Write("FileName (default \'debt.sav\', B to go back): ");
                 fileName = Console.ReadLine();
 
-                if (fileName.ToLower() == "c") return;
+                if (fileName == "b" || fileName == "B") return;
 
                 fileName = string.IsNullOrWhiteSpace(fileName) ? "debt.sav" : fileName;
                 fileName = Directory.GetCurrentDirectory() + "\\" + fileName;

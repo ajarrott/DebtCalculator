@@ -15,36 +15,7 @@ namespace DebtCalculator
         {
             List<Debt> loans = new List<Debt>();
 
-            while (true)
-            {
-                ConsoleKey key = Menu.DisplayMainMenu();
-
-                switch (key)
-                {
-                    case ConsoleKey.D1:
-                        // Debt Options
-                        Menu.DisplayDebtOptions();
-                        break;
-                    case ConsoleKey.D2:
-                        //Modify Income
-                        Menu.DisplayModifyIncome();
-                        break;
-                    case ConsoleKey.D3:
-                        //Calculate Payoff amounts
-                        Menu.CalculatePayoffs();
-                        break;
-                    case ConsoleKey.D4:
-                        //Save
-                        Menu.DisplaySave();
-                        break;
-                    case ConsoleKey.D5:
-                        Menu.DisplayLoad();
-                        //Load
-                        break;
-                    case ConsoleKey.Q:
-                        return;
-                }
-            }
+            Menu.DisplayMainMenu();
         }
     }
 }

@@ -35,22 +35,22 @@ namespace DebtCalculator.Models.Menus
                 {
                     case ConsoleKey.D1:
                         // Debt Options
-                        Menu.DisplayDebtOptions();
+                        DisplayDebtOptions();
                         break;
                     case ConsoleKey.D2:
                         //Modify Income
-                        Menu.DisplayModifyIncome();
+                        DisplayModifyIncome();
                         break;
                     case ConsoleKey.D3:
                         //Calculate Payoff amounts
-                        Menu.CalculatePayoffs();
+                        CalculatePayoffs();
                         break;
                     case ConsoleKey.D4:
                         //Save
-                        Menu.DisplaySave();
+                        DisplaySave();
                         break;
                     case ConsoleKey.D5:
-                        Menu.DisplayLoad();
+                        DisplayLoad();
                         //Load
                         break;
                     case ConsoleKey.Q:
