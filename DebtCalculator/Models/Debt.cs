@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 namespace DebtCalculator.Models
 {
-    internal class Debt : SaveLoad
+    internal class Debt : ISaveLoad
     {
+        public string Delimiter { get; private set; } = "|*|";
         public Debt()
         {
             Payments = new List<Payment>();
@@ -95,19 +96,19 @@ namespace DebtCalculator.Models
         //    return ((CurrentBalance * 0.01m) + interest);
         //}
 
-        public override void LoadString(string s)
+        public void LoadString(string s)
         {
-            var items = s.Split(new string[] { _delim }, StringSplitOptions.RemoveEmptyEntries);
+            var items = s.Split(new string[] { Delimiter }, StringSplitOptions.RemoveEmptyEntries);
             LoanName = items[1];
             CurrentBalance = decimal.Parse(items[2]);
             Apr = decimal.Parse(items[3]);
         }
 
-        public override string SaveString()
+        public string SaveString()
         {
             // indicies
             //     0                     1                   2                         3
-            return "debtInfo" + _delim + LoanName + _delim + CurrentBalance + _delim + Apr;
+            return "debtInfo" + Delimiter + LoanName + Delimiter + CurrentBalance + Delimiter + Apr;
         }
 
         public override string ToString()
