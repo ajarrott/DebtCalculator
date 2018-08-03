@@ -88,8 +88,8 @@ namespace DebtCalculator.Models.Menus
                 Console.Clear();
                 Console.WriteLine("Modify Debt: " + debt.ToString());
                 Console.WriteLine("-------------------------");
-                Console.WriteLine("1: Modify Name ({0})", debt.LoanName ?? "");
-                Console.WriteLine("2: Modify Balance ({0:C})", debt.CurrentBalance);
+                Console.WriteLine("1: Modify Name ({0})", debt.Name ?? "");
+                Console.WriteLine("2: Modify Balance ({0:C})", debt.Balance);
                 Console.WriteLine("3: Modify Apr ({0:P2})", debt.Apr);
                 Console.Write("Selection (B to go back): ");
                 var key = Console.ReadKey();
@@ -99,13 +99,13 @@ namespace DebtCalculator.Models.Menus
 
                 if(key.Key == ConsoleKey.D1)
                 {
-                    Console.Write("New Name ({0}, blank for no change): ", debt.LoanName);
+                    Console.Write("New Name ({0}, blank for no change): ", debt.Name);
                     var input = Console.ReadLine();
                     Console.WriteLine();
 
                     if (string.IsNullOrWhiteSpace(input)) continue;
 
-                    debt.LoanName = input;
+                    debt.Name = input;
                 }
 
                 if(key.Key == ConsoleKey.D2)
@@ -115,7 +115,7 @@ namespace DebtCalculator.Models.Menus
                     string input = "";
                     do
                     {
-                        Console.Write("New Balance ({0}, blank for no change): ", debt.CurrentBalance);
+                        Console.Write("New Balance ({0}, blank for no change): ", debt.Balance);
                         input = Console.ReadLine();
 
                         // leave loop if blank
@@ -123,7 +123,7 @@ namespace DebtCalculator.Models.Menus
                         validInput = decimal.TryParse(input, out newBalance);
 
                         if(validInput)
-                            debt.CurrentBalance = newBalance;
+                            debt.Balance = newBalance;
                     } while (!validInput);
                 }
 
@@ -200,7 +200,7 @@ namespace DebtCalculator.Models.Menus
                 Console.Write("Debt Name: ");
                 input = Console.ReadLine();
 
-                validName = !DebtCollection.GetDebts.Exists(x => x.LoanName == input);
+                validName = !DebtCollection.GetDebts.Exists(x => x.Name == input);
 
                 if (!validName) Console.WriteLine("Loan Name {0} already exists!", input);
             } while (!validName);

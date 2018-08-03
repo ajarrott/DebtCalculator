@@ -63,10 +63,10 @@ namespace DebtCalculator.Models.Menus
                                 Debt d = new Debt();
                                 d.LoadString(line);
 
-                                if (string.IsNullOrEmpty(d.LoanName)) continue;
+                                if (string.IsNullOrEmpty(d.Name)) continue;
 
                                 DebtCollection.AddDebt(d);
-                                Console.WriteLine("Loaded Debt ({0}, {1:C}, {2:P2})", d.LoanName, d.CurrentBalance, d.Apr);
+                                Console.WriteLine("Loaded Debt ({0}, {1:C}, {2:P2})", d.Name, d.Balance, d.Apr);
                             }
                         }
                     }

@@ -4,27 +4,29 @@ using System.Collections.Generic;
 
 namespace DebtCalculator.Models
 {
-    internal class Debt : SaveLoad
+    internal class Debt : ISaveLoad
     {
+        public string Delimiter { get; private set; } = "|*|";
         public Debt()
         {
             Payments = new List<Payment>();
         }
-        public Debt(string loanName, decimal interestRate, decimal currentBalance) : this()
+        public Debt(string name, decimal interestRate, decimal currentBalance) : this()
         {
-            LoanName = loanName;
+            Name = name;
             Apr = interestRate;
-            CurrentBalance = currentBalance;
+            Balance = currentBalance;
             CurrentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         }
 
-        public string LoanName { get; set; }
-        public decimal Apr { get; set; }
-        public decimal CurrentBalance { get; set; } // for now we will assume the current balance is the average daily balance
-                                                    // to overestimate we should use the highest balance
-
+        /* IBill Interface */
+        public string Name { get; set; }
+        public decimal Balance { get; set; } 
+        public int DueDay { get; set; }
         public DateTime CurrentMonth { get; set; }
         public List<Payment> Payments { get; set; }
+
+        public decimal Apr { get; set; }
 
         /// <summary>
         /// This will not modify the current class
@@ -36,13 +38,13 @@ namespace DebtCalculator.Models
         public PaymentInformation CalculateEstimatedPayoff(decimal estimatedPayment)
         {
             List<Payment> payments = new List<Payment>();
-            decimal currentBalance = CurrentBalance;
+            decimal currentBalance = Balance;
             int numPayments = 0;
             DateTime currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month + numPayments, 1);
 
             while (currentBalance > 0.00m)
             {
-                Payment pmt = new Payment(LoanName, currentMonth, Apr, currentBalance, estimatedPayment);
+                Payment pmt = new Payment(Name, currentMonth, Apr, currentBalance, estimatedPayment);
 
                 // last payment
                 payments.Add(pmt);
@@ -55,17 +57,12 @@ namespace DebtCalculator.Models
                 }
             }
 
-            return new PaymentInformation(LoanName, Apr, estimatedPayment, payments);
-        }
-
-        private int DaysInMonth(DateTime? currentMonth = null)
-        {
-            return DateTime.DaysInMonth(currentMonth?.Year ?? CurrentMonth.Year, currentMonth?.Month ?? CurrentMonth.Month);
+            return new PaymentInformation(Name, Apr, estimatedPayment, payments);
         }
 
         public Payment GetCurrentMinimumPayment()
         {
-            return new Payment(LoanName, CurrentMonth, Apr, CurrentBalance);
+            return new Payment(Name, CurrentMonth, Apr, Balance);
         }
 
         /// <summary>
@@ -77,42 +74,31 @@ namespace DebtCalculator.Models
         /// <returns></returns>
         public Payment MakeSinglePayment(decimal amount)
         {
-            Payment pmt = new Payment(LoanName, CurrentMonth, Apr, CurrentBalance, amount);
-            CurrentBalance = pmt.NewBalance;
+            Payment pmt = new Payment(Name, CurrentMonth, Apr, Balance, amount);
+            Balance = pmt.NewBalance;
             CurrentMonth = CurrentMonth.AddMonths(1);
             Payments.Add(pmt);
             return pmt;
         }
 
-        //public decimal GetMinimumPayment()
-        //{
-        //    Payment pmt = new Payment()
-        //    DateTime currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-        //    var days = DateTime.DaysInMonth(currentMonth.Year, currentMonth.Month);
-        //    var dayDecimal = days / 365.0m;
-        //    var interestRatio = dayDecimal * Apr;
-        //    decimal interest = CurrentBalance * interestRatio;
-        //    return ((CurrentBalance * 0.01m) + interest);
-        //}
-
-        public override void LoadString(string s)
+        public void LoadString(string s)
         {
-            var items = s.Split(new string[] { _delim }, StringSplitOptions.RemoveEmptyEntries);
-            LoanName = items[1];
-            CurrentBalance = decimal.Parse(items[2]);
+            var items = s.Split(new string[] { Delimiter }, StringSplitOptions.RemoveEmptyEntries);
+            Name = items[1];
+            Balance = decimal.Parse(items[2]);
             Apr = decimal.Parse(items[3]);
         }
 
-        public override string SaveString()
+        public string SaveString()
         {
             // indicies
             //     0                     1                   2                         3
-            return "debtInfo" + _delim + LoanName + _delim + CurrentBalance + _delim + Apr;
+            return "debtInfo" + Delimiter + Name + Delimiter + Balance + Delimiter + Apr;
         }
 
         public override string ToString()
         {
-            return string.Format("Name({0})\tBal({1:C})\tInterest({2:P2})\tMin Payment({3:C})", LoanName, CurrentBalance, Apr, GetCurrentMinimumPayment().Amount);
+            return string.Format("Name({0})\tBal({1:C})\tInterest({2:P2})\tMin Payment({3:C})", Name, Balance, Apr, GetCurrentMinimumPayment().Amount);
         }
     }
 }

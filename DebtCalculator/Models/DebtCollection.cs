@@ -27,7 +27,7 @@ namespace DebtCalculator.Models
         {
             get
             {
-                return (_currentDebts.Sum(x => x.CurrentBalance));
+                return (_currentDebts.Sum(x => x.Balance));
             }
         }
 

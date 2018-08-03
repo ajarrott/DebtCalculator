@@ -119,10 +119,10 @@ namespace DebtCalculator.Models.Menus
             decimal extraIncome = DebtCollection.TotalIncome - DebtCollection.TotalRequiredIncome;
 
             // get copy of list
-            var lowestFirst = DebtCollection.GetDebts.OrderBy(x => x.GetCurrentMinimumPayment().StartingBalance).Select(x => new Debt(x.LoanName, x.Apr, x.CurrentBalance)).ToList();
+            var lowestFirst = DebtCollection.GetDebts.OrderBy(x => x.GetCurrentMinimumPayment().StartingBalance).Select(x => new Debt(x.Name, x.Apr, x.Balance)).ToList();
             List<Payment> allPayments = new List<Payment>();
 
-            while(lowestFirst.Any(x => x.CurrentBalance > 0.00m))
+            while(lowestFirst.Any(x => x.Balance > 0.00m))
             {
                 var pmt = PaymentLogic(lowestFirst);
                 allPayments.AddRange(pmt);
@@ -135,11 +135,11 @@ namespace DebtCalculator.Models.Menus
 
         private static List<Payment> CalculateOptimalPayoff()
         {
-            var mostInterest = DebtCollection.GetDebts.OrderByDescending(x => x.GetCurrentMinimumPayment().Interest).Select(x => new Debt(x.LoanName, x.Apr, x.CurrentBalance)).ToList();
+            var mostInterest = DebtCollection.GetDebts.OrderByDescending(x => x.GetCurrentMinimumPayment().Interest).Select(x => new Debt(x.Name, x.Apr, x.Balance)).ToList();
             List<Payment> allPayments = new List<Payment>();
 
             // highest will be first in list
-            while (mostInterest.Any(x => x.CurrentBalance > 0.00m))
+            while (mostInterest.Any(x => x.Balance > 0.00m))
             {
                 var pmt = PaymentLogic(mostInterest);
                 allPayments.AddRange(pmt);
